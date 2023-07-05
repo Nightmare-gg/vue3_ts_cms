@@ -1,14 +1,21 @@
 <template>
   <div class="login">
-    <h2>login</h2>
+    <login-panel />
   </div>
 </template>
 
 <script setup lang="ts">
-import hyRequest from '@/service'
-hyRequest.get({ url: '/home/multidata' }).then((res) => {
-  console.log(res)
-})
+import LoginPanel from './c-cnps/login-panel.vue'
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: url(../../assets/img/login-bg.svg);
+}
+</style>
