@@ -5,6 +5,7 @@
       :model="account"
       :rules="accountRules"
       status-icon
+      ref="formRef"
     >
       <el-form-item label="账号" prop="name">
         <el-input v-model="account.name" />
@@ -17,10 +18,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import type { FormRules } from 'element-plus'
+import { reactive, ref } from 'vue'
+import type { FormRules, ElForm } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import useLoginStore from '@/store/login/login'
+import type { IAccount } from '@/types'
 
-const account = reactive({
+const account = reactive<IAccount>({
   name: '',
   password: ''
 })
@@ -42,6 +46,23 @@ const accountRules = reactive<InstanceType<typeof FormRules>>({
       trigger: 'change'
     }
   ]
+})
+// 3.执行账号的登录逻辑
+const formRef = ref<InstanceType<typeof ElForm>>()
+const loginStore = useLoginStore()
+function loginAction() {
+  formRef.value?.validate((valid: any) => {
+    if (valid) {
+      const name = account.name
+      const password = account.password
+      loginStore.loginAccountAction({ name, password })
+    } else {
+      ElMessage.error('请输入正确的格式后再操作！')
+    }
+  })
+}
+defineExpose({
+  loginAction
 })
 </script>
 

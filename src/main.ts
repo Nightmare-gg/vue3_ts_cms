@@ -9,6 +9,8 @@ import registerIcons from './global/register-icon'
 // import ElementPlus from 'element-plus'
 // import 'element-plus/dist/index.css'
 // app.use(ElementPlus)
+// 按需引入组件样式
+// import 'element-plus/theme-chalk/el-message.css'
 
 const app = createApp(App)
 app.use(router)
