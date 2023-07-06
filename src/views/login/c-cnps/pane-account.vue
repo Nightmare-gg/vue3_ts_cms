@@ -60,7 +60,7 @@ function loginAction(isRemPwd: boolean) {
       const name = account.name
       const password = account.password
       // 携带name和password发起网络请求
-      loginStore.loginAccountAction({ name, password }).then((res) => {
+      loginStore.loginAccountAction({ name, password }).then(() => {
         // 判断是否需要记住密码
         if (isRemPwd) {
           localCache.setCache(CACHE_NAME, name)

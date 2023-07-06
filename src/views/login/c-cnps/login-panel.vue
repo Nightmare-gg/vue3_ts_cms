@@ -49,11 +49,12 @@ import { watch } from 'vue'
 import { localCache } from '@/utils/cache'
 
 const isRemPwd = ref<boolean>(localCache.getCache('isRemPwd') ?? false)
-const activeName = ref('account')
-const accountRef = ref<InstanceType<typeof PaneAccount>>()
 watch(isRemPwd, (newValue) => {
   localCache.setCache('isRemPwd', newValue)
 })
+const activeName = ref('account')
+const accountRef = ref<InstanceType<typeof PaneAccount>>()
+
 function handleLoginBtn() {
   if (activeName.value === 'account') {
     console.log('用户进行账号')
