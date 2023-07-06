@@ -6,6 +6,7 @@
       :rules="accountRules"
       status-icon
       ref="formRef"
+      size="large"
     >
       <el-form-item label="账号" prop="name">
         <el-input v-model="account.name" />
