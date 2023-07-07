@@ -18,8 +18,8 @@ interface ILoginState {
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
     token: localCache.getCache(LOGIN_TOKEN) ?? '',
-    userInfo: {},
-    userMenus: []
+    userInfo: localCache.getCache('userInfo') ?? {},
+    userMenus: localCache.getCache('userMenus') ?? {}
   }),
   actions: {
     async loginAccountAction(account: IAccount) {
@@ -32,11 +32,13 @@ const useLoginStore = defineStore('login', {
       // 3.获取登录用户的详细信息（role信息）
       const userInfoResult = await getUserInfoById(id)
       this.userInfo = userInfoResult.data
-      console.log(this.userInfo)
       // 4.根据角色请求用户的权限（菜单menus)
       const userMenusResult = await getUserMenusByRoleId(this.userInfo.role.id)
       this.userMenus = userMenusResult.data
-      console.log(this.userMenus)
+
+      // 本地缓存用户信息和权限信息
+      localCache.setCache('userInfo', this.userInfo)
+      localCache.setCache('userMenus', this.userMenus)
 
       // 5.跳转首页
       router.push('/main')
