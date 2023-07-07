@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { LOGIN_TOKEN } from '@/global/constants'
 import { localCache } from '@/utils/cache'
+import { firstMenu } from '@/utils/map-menus'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -16,6 +17,7 @@ const router = createRouter({
     },
     {
       path: '/main',
+      name: 'main',
       component: () => import('../views/main/main.vue')
     },
     {
@@ -30,8 +32,13 @@ const router = createRouter({
 // 返回值:返回值决定导航的路径（不返回或者返回undefined,默认跳转)
 router.beforeEach((to) => {
   const token = localCache.getCache(LOGIN_TOKEN)
-  if (to.path === '/main' && !token) {
+  if (to.path.startsWith('/main') && !token) {
     return '/login'
+  }
+
+  // 如果进入main
+  if (to.path === '/main') {
+    return firstMenu?.url
   }
 })
 

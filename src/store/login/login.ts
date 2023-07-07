@@ -8,6 +8,7 @@ import type { IAccount } from '@/types'
 import { localCache } from '@/utils/cache'
 import { LOGIN_TOKEN } from '@/global/constants'
 import router from '@/router'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 
 interface ILoginState {
   token: string
@@ -17,9 +18,9 @@ interface ILoginState {
 
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
-    token: localCache.getCache(LOGIN_TOKEN) ?? '',
-    userInfo: localCache.getCache('userInfo') ?? {},
-    userMenus: localCache.getCache('userMenus') ?? {}
+    token: '',
+    userInfo: {},
+    userMenus: []
   }),
   actions: {
     async loginAccountAction(account: IAccount) {
@@ -40,8 +41,28 @@ const useLoginStore = defineStore('login', {
       localCache.setCache('userInfo', this.userInfo)
       localCache.setCache('userMenus', this.userMenus)
 
+      // 2.动态添加路由
+      const routes = mapMenusToRoutes(this.userMenus)
+      routes.forEach((route) => router.addRoute('main', route))
       // 5.跳转首页
       router.push('/main')
+    },
+
+    loadLocalCacheAction() {
+      // 1.用户进行刷新默认加载数据
+      const token = localCache.getCache(LOGIN_TOKEN)
+      const userInfo = localCache.getCache('userInfo')
+      const userMenus = localCache.getCache('userMenus')
+      // 当用户处于登录状态时
+      if (token && userInfo && userMenus) {
+        this.token = token
+        this.userInfo = userInfo
+        this.userMenus = userMenus
+
+        // 2.动态添加路由
+        const routes = mapMenusToRoutes(userMenus)
+        routes.forEach((route) => router.addRoute('main', route))
+      }
     }
   }
 })
