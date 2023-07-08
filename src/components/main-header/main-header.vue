@@ -6,7 +6,7 @@
       </el-icon>
     </div>
     <div class="content">
-      <div class="breadcrumb">面包屑</div>
+      <header-crumb />
       <header-info />
     </div>
   </div>
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import headerInfo from './c-cpns/header-info.vue'
+import headerCrumb from './c-cpns/header-crumb.vue'
 
 import { ref } from 'vue'
 // 内部自定义事件

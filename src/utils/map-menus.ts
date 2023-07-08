@@ -33,10 +33,50 @@ export function mapMenusToRoutes(userMenus: any[]) {
   for (const menu of userMenus) {
     for (const submenu of menu.children) {
       const route = localRoutes.find((item) => item.path === submenu.url)
-      if (route) routes.push(route)
+      if (route) {
+        // 给route的顶层菜单增加重定向功能（但只需要添加一次即可)
+        if (!routes.find((item) => item.path === menu.url)) {
+          routes.push({ path: menu.url, redirect: route.path })
+        }
+
+        // 二级菜单
+        routes.push(route)
+      }
+
       // 记录第一个被匹配到的菜单
       if (!firstMenu && route) firstMenu = submenu
     }
   }
   return routes
+}
+
+export function mapPathToMenu(path: string, userMenus: any[]) {
+  for (const menu of userMenus) {
+    for (const submenu of menu.children) {
+      if (submenu.url === path) {
+        return submenu
+      }
+    }
+  }
+}
+
+interface IBreadCrumbs {
+  name: string
+  path: string
+}
+
+export function mapPathToBreadCrumbs(path: string, userMenus: any[]) {
+  // 定义面包屑
+  const breadCrumbs: IBreadCrumbs[] = []
+  for (const menu of userMenus) {
+    for (const submenu of menu.children) {
+      if (submenu.url === path) {
+        // 顶层菜单
+        breadCrumbs.push({ name: menu.name, path: menu.url })
+        // 匹配菜单
+        breadCrumbs.push({ name: submenu.name, path: submenu.url })
+      }
+    }
+  }
+  return breadCrumbs
 }
