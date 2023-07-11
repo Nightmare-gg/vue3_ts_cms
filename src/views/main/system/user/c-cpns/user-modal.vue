@@ -1,6 +1,11 @@
 <template>
   <div class="modal">
-    <el-dialog v-model="dialogVisible" title="新建用户" width="30%" center>
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isNewRef ? '新建用户' : '编辑用户'"
+      width="30%"
+      center
+    >
       <el-form :model="formData" label-width="80px" size="large">
         <el-form-item label="用户名" prop="name">
           <el-input placeholder="请输入用户名" v-model="formData.name" />
@@ -8,7 +13,7 @@
         <el-form-item label="真实姓名" prop="realname">
           <el-input placeholder="请输入真实姓名" v-model="formData.realname" />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item v-if="isNewRef" label="密码" prop="password">
           <el-input
             placeholder="请输入密码"
             show-password
@@ -60,8 +65,8 @@ import useMainStore from '@/store/main/main'
 import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
 
-const dialogVisible = ref(true)
-const formData = reactive({
+const dialogVisible = ref(false)
+const formData = reactive<any>({
   name: '',
   realname: '',
   password: '',
@@ -69,21 +74,41 @@ const formData = reactive({
   roleId: '',
   departmentId: ''
 })
-// 控制对话框的显示与隐藏
-function setDialogVisible() {
-  dialogVisible.value = true
-}
 // 获取角色和部门信息
 const mainStore = useMainStore()
 const { entireRoles, entireDepartments } = storeToRefs(mainStore)
+const systemStore = useSystemStore()
+// 控制对话框的显示与隐藏
+const isNewRef = ref(true)
+const editData = ref()
+function setDialogVisible(isNew: boolean = true, itemData?: any) {
+  dialogVisible.value = true
+  isNewRef.value = isNew
+
+  if (!isNew && itemData) {
+    for (const key in formData) {
+      formData[key] = itemData[key]
+    }
+    editData.value = itemData
+  } else {
+    for (const key in formData) {
+      formData[key] = ''
+    }
+    editData.value = null
+  }
+}
 
 // 点击确认新建用户
 function handleConfirmClick() {
   // 1.对话框消失
   dialogVisible.value = false
-  // 2.将用户输入的数据传入服务器
-  const systemStore = useSystemStore()
-  systemStore.newUserAction(formData)
+  if (!isNewRef.value && editData.value) {
+    // 编辑用户
+    systemStore.editUserAction(editData.value.id, formData)
+  } else {
+    // 创建新用户
+    systemStore.newUserAction(formData)
+  }
 }
 // 对外暴露方法和属性
 defineExpose({ setDialogVisible })

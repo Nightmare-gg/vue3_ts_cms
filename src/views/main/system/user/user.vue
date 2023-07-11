@@ -4,7 +4,11 @@
       @query-click="handleQueryClick"
       @reset-click="handleResteClick"
     />
-    <user-content ref="contentRef" @new-click="handleNewClick" />
+    <user-content
+      ref="contentRef"
+      @new-click="handleNewClick"
+      @edit-click="handleEditClick"
+    />
     <user-modal ref="modalRef" />
   </div>
 </template>
@@ -28,6 +32,10 @@ function handleResteClick() {
 const modalRef = ref<InstanceType<typeof userModal>>()
 function handleNewClick() {
   modalRef.value?.setDialogVisible()
+}
+
+function handleEditClick(itemData: any) {
+  modalRef.value?.setDialogVisible(false, itemData)
 }
 </script>
 

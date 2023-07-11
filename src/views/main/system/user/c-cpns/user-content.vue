@@ -40,7 +40,12 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="150">
           <template #default="scope">
-            <el-button type="primary" icon="Edit" text size="small"
+            <el-button
+              type="primary"
+              icon="Edit"
+              text
+              size="small"
+              @click="handleEditBtnClick(scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -77,7 +82,7 @@ import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 
 // 自定义事件
-const emit = defineEmits(['newClick'])
+const emit = defineEmits(['newClick', 'editClick'])
 
 // 发送网络请求
 const currentPage = ref(1)
@@ -112,6 +117,11 @@ function handleDeleteBtnClick(id: number) {
 // 新建用户
 function handleNewUser() {
   emit('newClick')
+}
+
+// 编辑用户
+function handleEditBtnClick(itemData: any) {
+  emit('editClick', itemData)
 }
 
 defineExpose({ fetchUserListData })
