@@ -4,7 +4,8 @@
       @query-click="handleQueryClick"
       @reset-click="handleResteClick"
     />
-    <user-content ref="contentRef" />
+    <user-content ref="contentRef" @new-click="handleNewClick" />
+    <user-modal ref="modalRef" />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import { ref } from 'vue'
 
 import userSearch from './c-cpns/user-search.vue'
 import userContent from './c-cpns/user-content.vue'
+import userModal from './c-cpns/user-modal.vue'
 
 const contentRef = ref<InstanceType<typeof userContent>>()
 function handleQueryClick(formData: any) {
@@ -21,6 +23,11 @@ function handleQueryClick(formData: any) {
 
 function handleResteClick() {
   contentRef.value?.fetchUserListData()
+}
+
+const modalRef = ref<InstanceType<typeof userModal>>()
+function handleNewClick() {
+  modalRef.value?.setDialogVisible()
 }
 </script>
 

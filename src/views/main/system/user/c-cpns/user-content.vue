@@ -2,7 +2,7 @@
   <div class="content">
     <div class="header">
       <h2 class="title">用户列表</h2>
-      <el-button type="primary">新建用户</el-button>
+      <el-button type="primary" @click="handleNewUser">新建用户</el-button>
     </div>
     <div class="table">
       <el-table :data="usersList" border style="width: 100%">
@@ -76,6 +76,9 @@ import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 
+// 自定义事件
+const emit = defineEmits(['newClick'])
+
 // 发送网络请求
 const currentPage = ref(1)
 const pageSize = ref(10)
@@ -104,6 +107,11 @@ function fetchUserListData(formData: any = {}) {
 // 删除数据
 function handleDeleteBtnClick(id: number) {
   systemStore.deleteUserByIdAciton(id)
+}
+
+// 新建用户
+function handleNewUser() {
+  emit('newClick')
 }
 
 defineExpose({ fetchUserListData })
