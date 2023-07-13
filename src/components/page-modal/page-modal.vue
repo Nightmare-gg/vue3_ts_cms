@@ -65,7 +65,7 @@ import { ref, reactive } from 'vue'
 import useSystemStore from '@/store/main/system/system'
 import type { IModalProps } from './type'
 
-// interface IProps {
+// interface IModalProps {
 //   modalConfig: {
 //     header: {
 //       newTitle: string
@@ -113,16 +113,22 @@ function setDialogVisible(isNew: boolean = true, itemData?: any) {
 function handleConfirmClick() {
   // 1.对话框消失
   dialogVisible.value = false
+
+  let infoData = formData
+  if (props.otherInfo) {
+    infoData = { ...infoData, ...props.otherInfo }
+  }
+
   if (!isNewRef.value && editData.value) {
     // 编辑用户
     systemStore.editPageAction(
       props.modalConfig.pageName,
       editData.value.id,
-      formData
+      infoData
     )
   } else {
     // 创建新用户
-    systemStore.newPageAction(props.modalConfig.pageName, formData)
+    systemStore.newPageAction(props.modalConfig.pageName, infoData)
   }
 }
 // 对外暴露方法和属性

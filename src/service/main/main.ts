@@ -12,3 +12,9 @@ export function getEntrireDepartments() {
     url: '/department/list'
   })
 }
+
+export function getEntrireMenus() {
+  return hyRequest.post({
+    url: '/menu/list'
+  })
+}
