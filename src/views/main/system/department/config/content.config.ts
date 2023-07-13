@@ -12,20 +12,20 @@ const contentConfig = {
     { type: 'normal', prop: 'leader', label: '部门领导', width: '140' },
     { type: 'normal', prop: 'parentId', label: '上级部门', width: '140' },
 
-    {
-      type: 'custom',
-      prop: 'leader',
-      label: '部门领导',
-      width: '140',
-      slotName: 'leader'
-    },
-    {
-      type: 'custom',
-      prop: 'parentId',
-      label: '上级部门',
-      width: '140',
-      slotName: 'parent'
-    },
+    // {
+    //   type: 'custom',
+    //   prop: 'leader',
+    //   label: '部门领导',
+    //   width: '140',
+    //   slotName: 'leader'
+    // },
+    // {
+    //   type: 'custom',
+    //   prop: 'parentId',
+    //   label: '上级部门',
+    //   width: '140',
+    //   slotName: 'parent'
+    // },
 
     { type: 'timer', label: '创建时间', prop: 'createAt' },
     { type: 'timer', label: '更新时间', prop: 'updateAt' },

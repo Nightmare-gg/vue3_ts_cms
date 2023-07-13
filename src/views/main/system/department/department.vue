@@ -19,38 +19,43 @@
         <span class="parent">呵呵呵：{{ scope.row[scope.prop] }}</span>
       </template>
     </page-content>
-    <page-modal ref="modalRef" />
+    <page-modal ref="modalRef" :modal-config="modalConfigRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import pageSearch from '@/components/page-search/page-search.vue'
 import pageContent from '@/components/page-content/page-content.vue'
-import pageModal from './c-cpns/page-modal.vue'
+import pageModal from '@/components/page-modal/page-modal.vue'
 
 import searchConfig from './config/search.config'
 import contentConfig from './config/content.config'
+import modalConfig from './config/modal.config'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import useMainStore from '@/store/main/main'
 
-const contentRef = ref<InstanceType<typeof pageContent>>()
-function handleQueryClick(queryInfo: any) {
-  contentRef.value?.fetchPageListData(queryInfo)
-}
+import usePageContent from '@/hooks/usePageContent'
+import usePageModal from '@/hooks/usePageModal'
 
-function handleResetClick() {
-  contentRef.value?.fetchPageListData()
-}
+// 头部查询重置功能
+const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
+// 点击新建/编辑显示对话框
+const { modalRef, handleNewClick, handleEditClick } = usePageModal()
 
-const modalRef = ref<InstanceType<typeof pageModal>>()
-// 控制弹窗显示与隐藏
-function handleNewClick() {
-  modalRef.value?.setDialogVisible()
-}
-
-function handleEditClick(itemData: any) {
-  modalRef.value?.setDialogVisible(false, itemData)
-}
+// 对modalConfig进行操作
+const modalConfigRef = computed(() => {
+  const mainStore = useMainStore()
+  const departments = mainStore.entireDepartments.map((item) => {
+    return { label: item.name, value: item.id }
+  })
+  modalConfig.formItems.forEach((item) => {
+    if (item.prop === 'parentId') {
+      item.options?.push(...departments)
+    }
+  })
+  return modalConfig
+})
 </script>
 
 <style scoped lang="less">
