@@ -10,6 +10,7 @@ import {
   editPageData
 } from '@/service/main/system/system'
 import type { ISystemState } from './type'
+import useMainStore from '../main'
 
 const useSystemStore = defineStore('system', {
   state: (): ISystemState => ({
@@ -54,17 +55,27 @@ const useSystemStore = defineStore('system', {
       const deleteResult = await deletePageById(pageName, id)
 
       // 2.重新请求数据
-      this.postPageListAction(pageName)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+      // 3.获取完整数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     },
     async newPageAction(pageName: string, userInfo: any) {
       const newResult = await newPageData(pageName, userInfo)
       // 2.重新请求数据
-      this.postPageListAction(pageName)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
+      // 3.获取完整数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     },
     async editPageAction(pageName: string, id: number, userInfo: any) {
       const editResult = await editPageData(pageName, id, userInfo)
       // 2.重新请求数据
-      this.postPageListAction(pageName)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
+      // 3.获取完整数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     }
   }
 })

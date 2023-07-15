@@ -54,7 +54,10 @@ import { mapMenuListToIds } from '@/utils/map-menus'
 // 头部查询重置功能
 const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 // 点击新建/编辑显示对话框
-const { modalRef, handleNewClick, handleEditClick } = usePageModal(editCallback)
+const { modalRef, handleNewClick, handleEditClick } = usePageModal(
+  newCallback,
+  editCallback
+)
 
 // 获取菜单列表
 const mainStore = useMainStore()
@@ -67,6 +70,12 @@ function handleCheck(data1: any, data2: any) {
 }
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
+function newCallback() {
+  nextTick(() => {
+    treeRef.value.setCheckedKeys([])
+  })
+}
+
 function editCallback(itemData: any) {
   nextTick(() => {
     const menuIds = mapMenuListToIds(itemData.menuList)

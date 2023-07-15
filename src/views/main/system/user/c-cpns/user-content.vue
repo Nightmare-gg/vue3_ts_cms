@@ -2,7 +2,9 @@
   <div class="content">
     <div class="header">
       <h2 class="title">用户列表</h2>
-      <el-button type="primary" @click="handleNewUser">新建用户</el-button>
+      <el-button type="primary" @click="handleNewUser" v-if="isCreate"
+        >新建用户</el-button
+      >
     </div>
     <div class="table">
       <el-table :data="usersList" border style="width: 100%">
@@ -46,6 +48,7 @@
               text
               size="small"
               @click="handleEditBtnClick(scope.row)"
+              v-if="isUpdate"
               >编辑</el-button
             >
             <el-button
@@ -54,6 +57,7 @@
               text
               size="small"
               @click="handleDeleteBtnClick(scope.row.id)"
+              v-if="isDelete"
               >删除</el-button
             >
           </template>
@@ -80,14 +84,22 @@ import { ref } from 'vue'
 import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
+import usePermissions from '@/hooks/usePermissions'
 
 // 自定义事件
 const emit = defineEmits(['newClick', 'editClick'])
+
+// 按钮权限控制
+const isQuery = usePermissions('users:query')
+const isDelete = usePermissions('users:delete')
+const isUpdate = usePermissions('users:update')
+const isCreate = usePermissions('users:create')
 
 // 发送网络请求
 const currentPage = ref(1)
 const pageSize = ref(10)
 const systemStore = useSystemStore()
+
 fetchUserListData()
 // 拿到用户列表数据
 const { usersList, usersTotalCount } = storeToRefs(systemStore)
@@ -101,6 +113,7 @@ function handleCurrentChange() {
 }
 // 定义发送网络请求的方法
 function fetchUserListData(formData: any = {}) {
+  if (!isQuery) return
   const size = pageSize.value
   const offset = (currentPage.value - 1) * size
   const info = { size, offset }

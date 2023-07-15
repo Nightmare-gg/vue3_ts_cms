@@ -1,4 +1,5 @@
 const searchConfig = {
+  pageName: 'role',
   formItem: [
     {
       type: 'input',

@@ -2,7 +2,7 @@
   <div class="content">
     <div class="header">
       <h2 class="title">{{ contentConfig?.header?.title ?? '数据列表' }}</h2>
-      <el-button type="primary" @click="handleNewPt">{{
+      <el-button v-if="isCreate" type="primary" @click="handleNewPt">{{
         contentConfig?.header?.btnTitle ?? '新建数据'
       }}</el-button>
     </div>
@@ -30,6 +30,7 @@
                   text
                   size="small"
                   @click="handleEditBtnClick(scope.row)"
+                  v-if="isUpdate"
                   >编辑</el-button
                 >
                 <el-button
@@ -38,6 +39,7 @@
                   text
                   size="small"
                   @click="handleDeleteBtnClick(scope.row.id)"
+                  v-if="isDelete"
                   >删除</el-button
                 >
               </template>
@@ -77,6 +79,7 @@ import { ref } from 'vue'
 import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
+import usePermissions from '@/hooks/usePermissions'
 
 interface IProps {
   contentConfig: {
@@ -95,10 +98,28 @@ const props = defineProps<IProps>()
 // 自定义事件
 const emit = defineEmits(['newClick', 'editClick'])
 
+// 0.获取是否有对应的增删改查的权限
+const isCreate = usePermissions(`${props.contentConfig.pageName}:create`)
+const isDelete = usePermissions(`${props.contentConfig.pageName}:delete`)
+const isUpdate = usePermissions(`${props.contentConfig.pageName}:update`)
+const isQuery = usePermissions(`${props.contentConfig.pageName}:query`)
+
 // 发送网络请求
 const currentPage = ref(1)
 const pageSize = ref(10)
 const systemStore = useSystemStore()
+systemStore.$onAction(({ name, after }) => {
+  after(() => {
+    if (
+      name === 'deletePageByIdAction' ||
+      name === 'editPageAction' ||
+      name === 'newPageAction'
+    ) {
+      currentPage.value = 1
+    }
+  })
+})
+
 fetchPageListData()
 // 拿到用户列表数据
 const { pageList, pageTotalCount } = storeToRefs(systemStore)
@@ -112,6 +133,7 @@ function handleCurrentChange() {
 }
 // 定义发送网络请求的方法
 function fetchPageListData(formData: any = {}) {
+  if (!isQuery) return
   const size = pageSize.value
   const offset = (currentPage.value - 1) * size
   const info = { size, offset }
