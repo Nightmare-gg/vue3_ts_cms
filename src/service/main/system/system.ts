@@ -30,7 +30,7 @@ export function editUserData(id: number, userInfo: any) {
   })
 }
 
-// 部门相关网络请求
+// 页面相关网络请求
 export function postPageListData(pageName: string, queryInfo: any) {
   return hyRequest.post({
     url: `${pageName}/list`,
@@ -42,16 +42,16 @@ export function deletePageById(pageName: string, id: number) {
     url: `/${pageName}/${id}`
   })
 }
-export function newPageData(pageName: string, userInfo: any) {
+export function newPageData(pageName: string, pageInfo: any) {
   return hyRequest.post({
     url: `/${pageName}`,
-    data: userInfo
+    data: pageInfo
   })
 }
 
-export function editPageData(pageName: string, id: number, userInfo: any) {
+export function editPageData(pageName: string, id: number, pageInfo: any) {
   return hyRequest.patch({
     url: `/${pageName}/${id}`,
-    data: userInfo
+    data: pageInfo
   })
 }
